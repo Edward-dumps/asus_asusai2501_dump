@@ -1,0 +1,14 @@
+# qssi_64-userdebug 15 AQ3A.240508.003 35.0701.0701.31-0-F test-keys
+- manufacturer: asus
+- platform: sun
+- codename: ASUSAI2501
+- flavor: qssi_64-userdebug
+- release: 14
+- id: AQ3A.240508.003
+- incremental: 35.0701.0701.31-0-F
+- tags: test-keys
+- fingerprint: asus/OPENAI2501/ASUSAI2501:15/AQ3A.240508.003/35.0701.0701.31-0-F:userdebug/test-keys
+- is_ab: true
+- brand: asus
+- branch: qssi_64-userdebug-15-AQ3A.240508.003-35.0701.0701.31-0-F-test-keys
+- repo: asus_asusai2501_dump
