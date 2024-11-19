@@ -1,0 +1,18 @@
+{
+	"displayname":"sys X mode",
+	"configurations": [
+		{
+			"category":"Temperature",
+			"items": [
+				{
+					"name":"Temperature",
+					"code":"0x48000000",
+					"value":"2",
+					"valueset": [
+					  "0","99"
+					]
+				}
+			]
+		}
+	]
+}

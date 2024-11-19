@@ -1,0 +1,18 @@
+{
+	"displayname":"sys extreme power saving",
+	"configurations": [
+		{
+			"category":"Temperature",
+			"items": [
+				{
+					"name":"Temperature",
+					"code":"0x48000000",
+					"value":"9",
+					"valueset": [
+					  "0","99"
+					]
+				}
+			]
+		}
+	]
+}
