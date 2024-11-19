@@ -1,0 +1,144 @@
+#################################################################
+#                                                               #
+#                     ASUS SENSOR USERDEBUG RC                  #
+#                                                               #
+#################################################################
+
+
+on init
+
+
+
+on fs
+
+
+
+on post-fs
+
+
+on boot
+    chmod 0766 /sys/devices/virtual/sensors/lsensor/cal
+    chmod 0766 /sys/devices/virtual/sensors/lsensor/td
+    chmod 0766 /sys/devices/virtual/sensors/lsensor/cal_4k
+    chmod 0766 /sys/devices/virtual/sensors/lsensor/cal_7ffk
+    chmod 0766 /sys/devices/virtual/sensors/lsensor/rgb_recieveR
+    chmod 0766 /sys/devices/virtual/sensors/lsensor/rgb_recieveG
+    chmod 0766 /sys/devices/virtual/sensors/lsensor/rgb_recieveB
+    chmod 0766 /sys/devices/virtual/sensors/psensor/load_inf_cal
+    chmod 0766 /sys/devices/virtual/sensors/psensor/load_far_cal
+    chmod 0766 /sys/devices/virtual/sensors/psensor/load_near_cal
+    chmod 0766 /sys/devices/virtual/sensors/psensor/load_pocket_cal
+
+    #ASUS_BSP +++ Wilson "Proximity/Light sensor"
+    chown system shell /sys/class/sensors/psensor/switch
+    chown system shell /sys/class/sensors/psensor/inf_cal
+    chown system shell /sys/class/sensors/psensor/hi_cal
+    chown system shell /sys/class/sensors/psensor/low_cal
+    chown system shell /sys/class/sensors/psensor/pocket_cal
+    chown system shell /sys/class/sensors/psensor/proxm
+    chown system shell /sys/class/sensors/psensor/load_cal
+    chown system shell /sys/class/sensors/psensor/selection
+    chown system shell /sys/class/sensors/psensor/load_pocket_cal
+    chown system shell /sys/class/sensors/psensor/load_near_cal
+    chown system shell /sys/class/sensors/psensor/load_far_cal
+    chown system shell /sys/class/sensors/psensor/load_inf_cal
+    chown system shell /sys/class/sensors/psensor/ps_en_notify
+
+    chown system shell /sys/class/sensors/lsensor/switch
+    chown system shell /sys/class/sensors/lsensor/selection
+    chown system shell /sys/class/sensors/lsensor/cal
+    chown system shell /sys/class/sensors/lsensor/adc
+    #ASUS_BSP --- Wilson "Proximity/Light sensor"
+
+    # ASUS_BSP Sensor fasync +++
+    chown system system /dev/sensors_fasync
+    # ASUS_BSP Sensor fasync ---
+
+on post-fs-data
+
+    #ASUS_BSP +++ Wilson "Proximity/Light sensor"
+    write /sys/class/sensors/psensor/load_cal 1
+    #ASUS_BSP --- Wilson "Proximity/Light sensor"
+
+###+++++++++++++++++++++++++++++++++++++++++++++++###
+#        FTM Mode property trigger (start)
+#          ( trigger on ro.boot.ftm=1 )
+#
+#       ****DO NOT insert any services***
+###+++++++++++++++++++++++++++++++++++++++++++++++###
+on property:ro.boot.ftm=1 && property:sys.boot_completed=1 && property:vendor.atd.symlink.ready=1
+
+    symlink /vendor/bin/gsensor_status /data/data/gsensor_status
+    symlink /vendor/bin/gsensor_calibration_start /data/data/GsensorCalibration
+    symlink /vendor/bin/gsensor_calibration_data /data/data/gsensor_calibration_data
+    symlink /vendor/bin/gsensor_degree /data/data/DUTSideUpDetect
+    chmod 0777 /data/data/gsensor_status
+    chmod 0777 /data/data/GsensorCalibration
+    chmod 0777 /data/data/gsensor_calibration_data
+    chmod 0777 /data/data/DUTSideUpDetect
+
+    symlink /vendor/bin/gyroscope_status /data/data/gyroscope_status
+    symlink /vendor/bin/gyro_calibration_start /data/data/GyroCalibration
+    symlink /vendor/bin/gyro_calibration_data /data/data/gyro_calibration_data
+    chmod 0777 /data/data/gyroscope_status
+    chmod 0777 /data/data/GyroCalibration
+    chmod 0777 /data/data/gyro_calibration_data
+
+    symlink /vendor/bin/ecompass_status /data/data/ecompass_status
+    symlink /vendor/bin/ecompass_vendor /data/data/Ecompass_VendorID
+    chmod 0777 /data/data/ecompass_status
+    chmod 0777 /data/data/Ecompass_VendorID
+
+    symlink /vendor/bin/proximity_status /data/data/proximity_status
+    symlink /vendor/bin/lightsensor_status /data/data/lightsensor_status
+    chmod 0777 /data/data/proximity_status
+    chmod 0777 /data/data/lightsensor_status
+    
+    symlink /vendor/bin/hallsensor_status.sh /data/data/hallsensor_status
+    chmod 0766 /data/data/hallsensor_status
+    chown system shell /data/data/hallsensor_status
+
+    start sensors_f_init    
+
+###+++++++++++++++++++++++++++++++++++++++++++++++###
+#             ALL sensor service (start)
+#
+#         ****DO NOT insert any on property***
+###+++++++++++++++++++++++++++++++++++++++++++++++###
+service sensors_f_init /vendor/bin/sensors_factory_init.sh
+        class core
+        user root
+        oneshot
+        disabled
+
+# ASUS_BSP Wilson for Ecompass accessory offset  +++
+service ecompass_accessoryA_installed /vendor/bin/magnetometer_accessory_installed.sh
+        seclabel u:r:ASensorsService:s0
+        class core
+        user root
+        oneshot
+        disabled
+service ecompass_accessory_detect /vendor/bin/magnetometer_accessory_detect.sh
+        seclabel u:r:ASensorsService:s0
+        class core
+        user root
+        oneshot
+        disabled
+# ASUS_BSP Wilson for Ecompass accessory offset  ---
+
+
+###+++++++++++++++++++++++++++++++++++++++++++++++###
+#         ALL sensor on property  (start)
+#
+#           ****DO NOT insert service***
+###+++++++++++++++++++++++++++++++++++++++++++++++###
+
+# ASUS_BSP Wilson for Ecompass accessory offset  +++
+on property:vendor.asus.accessory_notify=*
+    start ecompass_accessory_detect
+
+on property:vendor.asus.mag.accessory=*
+    start ecompass_accessoryA_installed
+
+# ASUS_BSP Wilson for Ecompass accessory offset ---
+

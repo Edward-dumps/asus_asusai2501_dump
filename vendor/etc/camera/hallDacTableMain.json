@@ -1,0 +1,9 @@
+[
+    {"degree": -3.0, "hallCode": -1740},
+    {"degree": -2.0, "hallCode": -1160},
+    {"degree": -1.0, "hallCode": -580},
+    {"degree": 0, "hallCode": 0},
+    {"degree": 1.0, "hallCode": 580},
+    {"degree": 2.0, "hallCode": 1160},
+    {"degree": 3.0, "hallCode": 1740}
+]

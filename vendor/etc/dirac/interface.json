@@ -1,0 +1,83 @@
+{
+ "interfaceVersion": {
+  "majorVersion": 1,
+  "minorVersion": 1,
+  "patchVersion": 0
+ },
+ "uuid": "c4989e80-5657-4ef3-b726-4ed9c43fbca7",
+ "archiveMetaData": {},
+ "description": "For Factory Music and Music SS",
+ "configurations": [
+  {
+   "name": "MUSIC",
+   "rtCoreVersion": {
+    "majorVersion": 2,
+    "minorVersion": 1,
+    "patchVersion": 1
+   },
+   "signalChainMetaData": {
+    "bypass_gain_db": {
+     "stringValue": "0"
+    },
+    "output_type": {
+     "stringValue": "speaker"
+    },
+    "stream_type": {
+     "stringValue": "normal"
+    },
+    "bypass_gain_lin": {
+     "stringValue": "1"
+    },
+    "group_id": {
+     "stringValue": "0"
+    }
+   },
+   "parameters": [],
+   "numInputs": 2,
+   "numOutputs": 2
+  },
+  {
+   "name": "MUSIC_SS",
+   "rtCoreVersion": {
+    "majorVersion": 2,
+    "minorVersion": 1,
+    "patchVersion": 1
+   },
+   "signalChainMetaData": {
+    "bypass_gain_db": {
+     "stringValue": "0"
+    },
+    "output_type": {
+     "stringValue": "speaker"
+    },
+    "stream_type": {
+     "stringValue": "system"
+    },
+    "bypass_gain_lin": {
+     "stringValue": "1"
+    },
+    "group_id": {
+     "stringValue": "2"
+    }
+   },
+   "parameters": [],
+   "numInputs": 2,
+   "numOutputs": 2
+  }
+ ],
+ "creator": "Flow 4.2.0",
+ "creatorVersion": {
+  "majorVersion": 4,
+  "minorVersion": 2,
+  "patchVersion": 0
+ },
+ "author": "sonya.wang@dirac.com",
+ "project": "ROG VIIII",
+ "manufacturer": "Asus",
+ "processorLibraryVersion": {
+  "majorVersion": 5,
+  "minorVersion": 3,
+  "patchVersion": 0
+ },
+ "creationTime": "2024-06-26T09:40:51Z"
+}

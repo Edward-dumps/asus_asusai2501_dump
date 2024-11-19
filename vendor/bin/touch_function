@@ -1,0 +1,91 @@
+#!/system/bin/sh
+#echo "$0 $*"> /proc/fac_printklog
+path="/sys/bus/platform/devices/synaptics_tcm.0/sysfs"
+
+if [ -e "/sys/bus/platform/devices/synaptics_tcm.0/sysfs/fw_ver" ] ;then
+    path="/sys/bus/platform/devices/synaptics_tcm.0/sysfs"
+fi
+
+my_exit() {
+for i in `seq 1 $time`
+do
+	sleep 1
+	status=$(cat ${path}/irq_en)
+		if [ "$temp" == "1" ]
+		then
+			if [ "$status" == "1" ]
+			then
+	    			echo "Enable OK"
+				return
+			elif [ "$status" == "0" ]
+			then
+				echo "Enable Fail"
+				return
+			else
+				continue
+			 	#echo "Fail"
+			fi
+		elif [ "$temp" == "0" ]
+		then
+			if [ "$status" == "0" ]
+			then
+	    			echo "Disable OK"
+				return
+			elif [ "$status" == "1" ]
+			then
+				echo "Disable Fail"
+				return
+			else
+				continue
+			 	#echo "0 $stauts Fail"
+			fi
+		else
+			echo "Para1 Fail"
+		fi
+done
+echo "Timeout"
+}
+
+help() {
+    echo "
+API: ATD TestCommand Interface 
+
+FORMAT: adb shell /data/data/touch_function Para1 Para2
+
+RETURN VALUE: Enabl OK/Fail Disable OK/Fail Timeout
+
+USAGE:
+  <Disable touch funtion.>
+    (para1) 0
+
+  <Enable touch funtion.>
+    (para1) 1
+
+  <Timeout>
+    (para2) In decimal
+
+"
+exit 0
+}
+
+#===============================
+#main 
+#===============================
+
+temp=$1
+time=$2
+case $1 in
+#Disable touch funtion
+"0")
+	echo suspend >${path}/power_state
+;;
+#Enable touch funtion
+"1")
+	echo resume >${path}/power_state
+;;
+*)
+    help
+;;
+esac
+
+my_exit success

@@ -1,0 +1,43 @@
+#!/vendor/bin/sh
+
+if [ -n "$1" ]; then
+	export CMD=$1
+	if [ -n "$2" ];then
+		export opt=$2
+	fi
+else
+	echo "CMD not assigned !"
+	echo " 0 (R1), 1 (L1), 2 (R2), 3 (L2)"
+	exit
+fi
+
+if [ "$CMD" -lt "0" -o "$CMD" -gt "3" ]; then
+	echo "CMD not assigned !"
+	echo " 0 (R1), 1 (L1), 2 (R2), 3 (L2)"
+	exit
+fi
+
+if [ "$CMD" -eq "0" ]; then
+	echo 0 > /sys/class/leds/aura_inbox/key_state
+
+	result=`cat /sys/class/leds/aura_inbox/key_state`
+	echo $result
+
+elif [ "$CMD" -eq "1" ]; then
+	echo 1 > /sys/class/leds/aura_inbox/key_state
+
+	result=`cat /sys/class/leds/aura_inbox/key_state`
+	echo $result
+
+elif [ "$CMD" -eq "2" ]; then
+	echo 2 > /sys/class/leds/aura_inbox/key_state
+
+	result=`cat /sys/class/leds/aura_inbox/key_state`
+	echo $result
+
+elif [ "$CMD" -eq "3" ]; then
+	echo 3 > /sys/class/leds/aura_inbox/key_state
+
+	result=`cat /sys/class/leds/aura_inbox/key_state`
+	echo $result
+fi

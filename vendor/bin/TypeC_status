@@ -1,0 +1,7 @@
+#!/system/bin/sh
+TypeC_status=`cat /sys/class/tcpc/typec/TypeC_status`
+if [ $TypeC_status -eq 1 ]; then
+	echo "1"
+else
+	echo "0"
+fi

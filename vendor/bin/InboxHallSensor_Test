@@ -1,0 +1,7 @@
+#!/vendor/bin/sh
+
+HS_status=`cat /sys/class/leds/aura_inbox/get_hall_status`
+
+echo $HS_status
+
+exit

@@ -1,0 +1,4 @@
+#!/vendor/bin/sh
+
+echo 1 > /sys/class/leds/aura_inbox/ic_switch
+cat /sys/class/leds/aura_inbox/fw_ver

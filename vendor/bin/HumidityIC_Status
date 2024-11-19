@@ -1,0 +1,13 @@
+#!/vendor/bin/sh
+
+echo 1 > /sys/class/leds/aura_inbox/measure
+sleep 1
+
+HUMIDITY_ID=`cat /sys/class/leds/aura_inbox/HDC2010_DEVID`
+
+if [ "$HUMIDITY_ID" == "0x07d0" ]; then
+	echo PASS
+else
+	echo FAIL
+fi
+

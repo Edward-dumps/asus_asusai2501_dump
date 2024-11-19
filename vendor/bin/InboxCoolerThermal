@@ -1,0 +1,10 @@
+#!/vendor/bin/sh
+
+echo 1 > /sys/class/leds/aura_inbox/measure
+sleep 0.1
+
+TEMP=`cat /sys/class/leds/aura_inbox/temperature`
+
+echo $TEMP
+
+echo 0 > /sys/class/leds/aura_inbox/measure

@@ -1,0 +1,12 @@
+#!/vendor/bin/sh
+echo 5000 > /sys/class/leds/aw_vibrator/duration
+echo 6 > /sys/class/leds/aw_vibrator/index
+echo $1 > /sys/class/leds/aw_vibrator/activate
+
+result=`cat /sys/class/leds/aw_vibrator/activate`
+
+if [ "$result" -eq "$1" ]; then
+	echo 1
+else
+	echo 0
+fi

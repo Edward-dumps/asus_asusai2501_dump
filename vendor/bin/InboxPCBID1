@@ -1,0 +1,4 @@
+#!/vendor/bin/sh
+
+PCBID1=`cat /sys/class/leds/aura_inbox/PCBID1`
+echo $PCBID1

@@ -1,0 +1,7 @@
+#!/vendor/bin/sh
+
+PD_ver=`cat /sys/class/leds/aura_inbox/pd_fw_date`
+
+echo $PD_ver
+
+exit

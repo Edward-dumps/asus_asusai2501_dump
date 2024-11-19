@@ -1,0 +1,209 @@
+#!/system/bin/sh
+
+if [ ! $# -eq 1 ]; then
+    echo "please use SCurrentTest 1 => enter airplane"
+    echo "please use SCurrentTest 0 => leave airplane"
+    exit 0
+fi
+
+TAG="SCurrentTest"
+BTTEST="/vendor/bin/btrftest"
+WIFITEST="getprop wlan.driver.status"
+WIFIOFF="unloaded"
+PHONETEST="serial_client -c at+cfun?"
+PHONE_TURN_OFF="serial_client -c at+cfun=0"
+PHONE_TURN_ON="serial_client -c at+cfun=1"
+PHONEON="+CFUN: 1"
+PHONEOFF="+CFUN: 0"
+CheckSuspend="cat /sys/module/qpnp_rtc/parameters/rtc_wake_control"
+
+check_wifi_off() {
+    log -t "$TAG" "check_wifi_off"
+    is_wifi_off=`dumpsys wifi | grep -i 'Current wifi mode:' | grep DisabledState`
+
+    if [ "$is_wifi_off" == "" ]; then
+        svc wifi disable
+        sleep 3
+
+        is_wifi_off=`dumpsys wifi | grep -i 'Current wifi mode:' | grep DisabledState`
+        if [ "$is_wifi_off" == "" ]; then
+            svc wifi disable
+            sleep 3
+
+            is_wifi_off=`dumpsys wifi | grep -i 'Current wifi mode:' | grep DisabledState`
+            if [ "$is_wifi_off" == "" ]; then
+                log -t "$TAG" "wifi off fail"
+                echo "wifi off fail"
+                exit
+            fi
+         fi
+     fi
+}
+
+check_bt_off() {
+    log -t "$TAG" "check_bt_off"
+    is_bt_on=`dumpsys bluetooth_manager | grep "OFF"`
+    log -t "$TAG" "$is_bt_on"
+    if [ "$is_bt_on" == "" ]; then
+        svc bluetooth disable
+        sleep 1
+        check_is_bt_on=`dumpsys bluetooth_manager | grep "OFF"`
+        if  [ "$check_is_bt_on" == "" ]; then
+            svc bluetooth disable
+            sleep 1
+            recheck_is_bt_on=`dumpsys bluetooth_manager | grep "OFF"`
+            if [ "$recheck_is_bt_on" == "" ]; then
+                log -t "$TAG" "bt off fail"
+                echo "bt off fail"
+                exit
+            fi
+        fi
+    fi
+}
+
+turn_phone_state() {
+    if [ "$1" == "1" ]; then
+            log -t "$TAG" "Force PHONE_TURN_ON"
+            $PHONE_TURN_ON > /dev/null
+        sleep 2
+    elif [ "$1" == "0" ]; then
+            log -t "$TAG" "Force PHONE_TURN_OFF"
+            $PHONE_TURN_OFF > /dev/null
+        sleep 2
+    fi
+}
+
+check_modem_state_internal() {
+    res=-1
+    phoneOff=`$PHONETEST | grep "$PHONEOFF"`
+    phoneOn=`$PHONETEST | grep "$PHONEON"`
+    if [ "$phoneOff" != "" ]; then
+        res=1
+    elif [ "$phoneOn" != "" ]; then
+        res=0
+    fi
+    echo "$res"
+}
+
+check_system_ready() {
+    boot_check_count=0
+    while [ $boot_check_count -lt 25 ]; do
+        boot_check_count=$(($boot_check_count + 1));
+        boot_completed=`getprop sys.boot_completed`
+        if [  "$boot_completed" == "1" ]; then
+            #echo $boot_completed
+            break;
+        fi
+        #echo "$boot_completed not ready"
+        sleep 1
+    done
+    airplaneModeState=`settings get global airplane_mode_on`
+    is_modem=`check_modem_state_internal`
+    if [ "$is_modem" == "-1" ]; then
+        log -t "$TAG" "Do't do anything modem: $is_modem"
+    elif [ "$airplaneModeState" != "$is_modem" ]; then
+        log -t "$TAG" "modem state is not equal to firmware database: $airplaneModeState , modem: $is_modem"
+        if [ "$airplaneModeState" == "1" ]; then
+           turn_phone_state 0
+        elif [ "$airplaneModeState" == "0" ]; then
+            turn_phone_state 1
+        fi
+
+    fi
+}
+
+issue_airplane_mode() {
+    if [ "$1" == "1" ]; then
+        cmd connectivity airplane-mode enable
+        log -t "$TAG" "cmd connectivity airplane-mode enable"
+        sleep 3
+    elif [ "$1" == "0" ]; then
+        cmd connectivity airplane-mode disable
+        log -t "$TAG" "connectivity airplane-mode disable"
+        sleep 3
+    fi
+}
+
+check_modem_state() {
+    log -t "$TAG" "check_modem_state $1"
+    retval=""
+    cnt=0
+    while [ $cnt -lt 7 ]; do
+        cnt=$(($cnt + 1));
+        if [ "$1" == "1" ]; then
+            phone_mode=`$PHONETEST | grep "$PHONEOFF"`
+        elif [ "$1" == "0" ]; then
+            phone_mode=`$PHONETEST | grep "$PHONEON"`
+        fi
+        if [ ! "$phone_mode" == "" ]; then
+            break;
+        fi
+        sleep 3
+    done
+
+    if [ $cnt -eq 7 ]; then
+        retval="fail"
+    fi
+    echo "$retval"
+}
+
+log -t "$TAG" "Starting $1"
+
+if [ "$1" == "1" ]; then
+    check_system_ready
+
+    issue_airplane_mode $1
+
+    check_wifi_off
+    check_bt_off
+
+    is_modem=`check_modem_state $1`
+
+    if [ "$is_modem" != "" ]; then
+        issue_airplane_mode $1
+
+        is_modem=`check_modem_state $1`
+
+        if [ "$is_modem" != "" ]; then
+            log -t "$TAG" "Force PHONE_TURN_OFF"
+            $PHONE_TURN_OFF > /dev/null
+            phone_mode=`$PHONETEST | grep "$PHONEOFF"`
+            if [ "$phone_mode" == "" ]; then
+                echo "phone off fail";
+                exit
+            fi
+        fi
+    fi
+    # ----------------------------------------------------------------------
+    sync
+
+    sleep 1
+    echo "OK"
+elif [ "$1" == "0" ]; then
+    check_system_ready
+
+    issue_airplane_mode $1
+    is_modem=`check_modem_state $1`
+
+    if [ "$is_modem" != "" ]; then
+        issue_airplane_mode $1
+
+        is_modem=`check_modem_state $1`
+
+        if [ "$is_modem" != "" ]; then
+            log -t "$TAG" "Force PHONE_TURN_ON"
+            $PHONE_TURN_ON > /dev/null
+            phone_mode=`$PHONETEST | grep "$PHONEON"`
+            if [ "$phone_mode" == "" ]; then
+                echo "phone on fail";
+                exit
+            fi
+        fi
+    fi
+    # ----------------------------------------------------------------------
+    sync
+
+    sleep 1
+    echo "OK"
+fi
+

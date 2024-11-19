@@ -1,0 +1,135 @@
+#!/vendor/bin/sh
+
+if [ -n "$1" ]; then
+	export CMD=$1
+	if [ -n "$2" ];then
+		export opt=$2
+	fi
+else
+	echo "CMD not assigned !"
+	echo " 0 (Off), 1 (On, 25% duty), 2 (50% duty), 3 (75% duty), 4 (100% duty), 5 (Optional)"
+	exit
+fi
+
+if [ "$CMD" -lt "0" -o "$CMD" -gt "5" ]; then
+	echo "CMD not assigned !"
+	echo " 0 (Off), 1 (On, 25% duty), 2 (50% duty), 3 (75% duty), 4 (100% duty), 5 (Optional)"
+	exit
+fi
+
+if [ "$CMD" -eq "0" ]; then
+	echo 0 > /sys/class/leds/aura_inbox/fan_PWM
+	sleep 3
+#	result=`cat /sys/class/leds/aura_inbox/fan_RPM`
+#	if [ "$result" -eq "0" ]; then
+#		echo PASS
+#	else
+#		echo FAIL
+#	fi
+
+	result=`cat /sys/class/leds/aura_inbox/fan_PWM`
+	if [ "$result" -eq "0" ]; then
+		echo PASS
+	else
+		echo FAIL
+	fi
+
+elif [ "$CMD" -eq "1" ]; then
+	echo 127 > /sys/class/leds/aura_inbox/fan_PWM
+	sleep 1
+#	result=`cat /sys/class/leds/aura_inbox/fan_RPM`
+#	if [ "$result" -eq "0" ]; then
+#		echo FAIL
+#	else
+#		echo "$result"
+#	fi
+
+	result=`cat /sys/class/leds/aura_inbox/fan_PWM`
+	if [ "$result" -eq "127" ]; then
+		echo PASS
+	else
+		echo FAIL
+	fi
+
+elif [ "$CMD" -eq "2" ]; then
+	echo 135 > /sys/class/leds/aura_inbox/fan_PWM
+	sleep 1
+#	result=`cat /sys/class/leds/aura_inbox/fan_RPM`
+#	if [ "$result" -eq "0" ]; then
+#		echo FAIL
+#	else
+#		echo "$result"
+#	fi
+
+	result=`cat /sys/class/leds/aura_inbox/fan_PWM`
+	if [ "$result" -eq "135" ]; then
+		echo PASS
+	else
+		echo FAIL
+	fi
+
+elif [ "$CMD" -eq "3" ]; then
+	echo 163 > /sys/class/leds/aura_inbox/fan_PWM
+	sleep 1
+#	result=`cat /sys/class/leds/aura_inbox/fan_RPM`
+#	if [ "$result" -eq "0" ]; then
+#		echo FAIL
+#	else
+#		echo "$result"
+#	fi
+
+	result=`cat /sys/class/leds/aura_inbox/fan_PWM`
+	if [ "$result" -eq "163" ]; then
+		echo PASS
+	else
+		echo FAIL
+	fi
+
+elif [ "$CMD" -eq "4" ]; then
+	echo 171 > /sys/class/leds/aura_inbox/fan_PWM
+	sleep 1
+#	result=`cat /sys/class/leds/aura_inbox/fan_RPM`
+#	if [ "$result" -eq "0" ]; then
+#		echo FAIL
+#	else
+#		echo "$result"
+#	fi
+
+	result=`cat /sys/class/leds/aura_inbox/fan_PWM`
+	if [ "$result" -eq "171" ]; then
+		echo PASS
+	else
+		echo FAIL
+	fi
+
+elif [ "$CMD" -eq "5" ]; then
+	if [ "$opt" -eq "" ];then
+		echo -n "Input RPM (1~255, default 152):"
+		read rpm
+		if [ -n "$rpm" ];then
+			if [ "$rpm" -lt "1" -o "$pwm" -gt "255" ]; then
+				echo "RPM ranges from 1 to 255 !"
+			else
+				let pwm="$rpm"*255/100
+				echo "$rpm" > /sys/class/leds/aura_inbox/fan_PWM
+				sleep 1
+				result=`cat /sys/class/leds/aura_inbox/fan_RPM`
+				echo "$result"
+			fi
+		else
+			echo 127 > /sys/class/leds/aura_inbox/fan_PWM
+			sleep 1
+			result=`cat /sys/class/leds/aura_inbox/fan_RPM`
+			if [ "$result" -eq "0" ]; then
+				echo FAIL
+			else
+				echo "$result"
+			fi
+		fi
+	else
+		echo "$opt" > /sys/class/leds/aura_inbox/fan_PWM
+		sleep 1
+		result=`cat /sys/class/leds/aura_inbox/fan_RPM`
+		echo "$result"
+	fi
+fi

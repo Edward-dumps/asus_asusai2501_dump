@@ -1,0 +1,8 @@
+#!/system/bin/sh
+
+#config_id=`cat /sys/bus/platform/devices/synaptics_tcm.0/sysfs/config_id`
+fw_ver=`cat /sys/bus/platform/devices/synaptics_tcm.0/sysfs/fw_ver`
+result="$fw_ver"
+echo "$result"
+
+exit

@@ -1,0 +1,80 @@
+#!/system/bin/sh
+
+#check_id_result=`cat /sys/bus/platform/devices/synaptics_tcm.0/sysfs/testing/check_id`
+#if [[ "$check_id_result" == *"pass"* ]]; then
+#	echo "check_id pass"
+#	check_id_flag="1"
+#else
+#	echo "check_id fail"
+#	check_id_flag="0"
+#fi
+
+pt01_result=`cat /sys/bus/platform/devices/synaptics_tcm.0/sysfs/testing/pt01`
+if [[ "$pt01_result" == *"pass"* ]]; then
+#	echo "tp01 pass"
+	pt01_flag="1"
+else
+#	echo "tp01 fail"
+	pt01_flag="0"
+fi
+
+pt05_result=`cat /sys/bus/platform/devices/synaptics_tcm.0/sysfs/testing/pt05`
+if [[ "$pt05_result" == *"pass"* ]]; then
+#	echo "tp05 pass"
+	pt05_flag="1"
+else
+#	echo "tp05 fail"
+	pt05_flag="0"
+fi
+
+pt0a_result=`cat /sys/bus/platform/devices/synaptics_tcm.0/sysfs/testing/pt0a`
+if [[ "$pt0a_result" == *"pass"* ]]; then
+#	echo "pt0a pass"
+	pt0a_flag="1"
+else
+#	echo "pt0a fail"
+	pt0a_flag="0"
+fi
+
+pt11_result=`cat /sys/bus/platform/devices/synaptics_tcm.0/sysfs/testing/pt11`
+if [[ "$pt11_result" == *"pass"* ]]; then
+#	echo "pt11 pass"
+	pt11_flag="1"
+else
+#	echo "pt11 fail"
+	pt11_flag="0"
+fi
+
+#pt12_result=`cat /sys/bus/platform/devices/synaptics_tcm.0/sysfs/testing/pt12`
+#if [[ "$pt12_result" == *"pass"* ]]; then
+#	echo "pt12 pass"
+#	pt12_flag="1"
+#else
+#	echo "pt12 fail"
+#	pt12_flag="0"
+#fi
+
+pt16_result=`cat /sys/bus/platform/devices/synaptics_tcm.0/sysfs/testing/pt16`
+if [[ "$pt16_result" == *"pass"* ]]; then
+#	echo "pt16 pass"
+	pt16_flag="1"
+else
+#	echo "pt16 fail"
+	pt16_flag="0"
+fi
+
+pt1d_result=`cat /sys/bus/platform/devices/synaptics_tcm.0/sysfs/testing/pt1d`
+if [[ "$pt1d_result" == *"pass"* ]]; then
+#	echo "pt1d pass"
+	pt1d_flag="1"
+else
+#	echo "pt1d fail"
+	pt1d_flag="0"
+fi
+
+if [ "$pt01_flag" == "1" ] && [ "$pt05_flag" == "1" ] && [ "$pt0a_flag" == "1" ] && [ "$pt11_flag" == "1" ] && [ "$pt16_flag" == "1" ] && [ "$pt1d_flag" == "1" ]; then
+	echo "PASS"
+else
+	echo "FAIL"
+fi
+exit

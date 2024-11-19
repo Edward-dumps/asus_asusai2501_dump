@@ -1,0 +1,10 @@
+#!/system/bin/sh
+
+Touch_Status=`cat /sys/bus/platform/devices/synaptics_tcm.0/sysfs/dev_connect`
+if [ "$Touch_Status" == "1" ]; then
+	echo 1
+else
+	echo 0
+fi
+
+exit

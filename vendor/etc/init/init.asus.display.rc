@@ -1,0 +1,19 @@
+on post-fs-data
+    chmod 0666 /sys/class/asus_fod/hdr_mode
+    chmod 0666 /sys/class/asus_fod_touch/fod_touched
+    chmod 0444 /sys/class/asus_fod/ghbm_on_requested
+    chmod 0444 /sys/class/asus_fod/ghbm_on_achieved
+    chmod 0444 /sys/class/asus_fod/spot_on_achieved
+    chmod 0666 /sys/class/asus_fod/hbm_mode
+    chmod 0666 /sys/class/asus_fod/panel_clk
+    chmod 0666 /sys/class/asus_fod/aod_fps
+    chmod 0222 /sys/class/asus_fod/send_dcs_cmd
+    chmod 0666 /sys/class/asus_fod/print_dcs_cmd
+    chmod 0666 /sys/class/asus_fod/video_mode
+    setprop vendor.asus.displayrc 1
+
+on property:debug.sf.disable_hop_mode=*
+    setprop persist.vendor.disable_hop_mode ${debug.sf.disable_hop_mode}
+
+on property:vendor.asus.wlan.5Gband=*
+    write /sys/class/asus_fod/wifi_5g_in_use ${vendor.asus.wlan.5Gband}

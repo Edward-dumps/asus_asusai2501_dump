@@ -1,0 +1,9 @@
+#!/system/bin/sh
+TypeC_CC_Top=`cat /sys/class/tcpc/typec/TypeC_CC_Top`
+if [ $TypeC_CC_Top -eq 1 ]; then
+	echo "1"
+elif [ $TypeC_CC_Top -lt 0 ]; then
+	echo "-1"
+else
+	echo "0"
+fi

@@ -1,0 +1,30 @@
+service asuskey_verify_A /vendor/bin/asuskeyca 5
+    class core
+    user root
+    group root system shell drmrpc
+    disabled
+    oneshot
+    seclabel u:r:asuskey:s0
+
+service asuskey_verify_R /vendor/bin/asuskeyca 6
+    class core
+    user root
+    group root system shell drmrpc
+    disabled
+    oneshot
+    seclabel u:r:asuskey:s0
+
+service asuskey_ims_verify_A /vendor/bin/asuskeyca 8
+    class core
+    user root
+    group root system shell drmrpc
+    disabled
+    oneshot
+    seclabel u:r:asuskey:s0
+
+on property:sys.boot_completed=1
+    start asuskey_verify_A
+    start asuskey_verify_R
+
+on property:persist.vendor.asuskey.ims.verify=1
+    start asuskey_ims_verify_A

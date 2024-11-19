@@ -1,0 +1,141 @@
+#!/vendor/bin/sh
+
+helpFunction()
+{
+   echo ""
+   echo "Usage: $0"
+   echo -e "\t-a [ATTESTATION] adb shell asuskey_install_tool -a"
+   echo -e "\t-d [WFD]         adb shell asuskey_install_tool -d"
+   echo -e "\t-e [DPHDCP]      adb shell asuskey_install_tool -e"
+   echo -e "\t-f [DPHDCP2]     adb shell asuskey_install_tool -f"
+   echo -e "\t-k [WIDEVINE]    adb shell asuskey_install_tool -k"
+   exit 1 # Exit script after printing help
+}
+
+InstallAKey()
+{
+n=1
+result="FAIL"
+
+# Generate key
+if [ ! -e "/data/AI2501.attestation.secure" ]; then
+	echo $result
+	return
+else
+	/vendor/bin/asusCA -a
+	if [ ! -e "/data/key.xml" ]; then
+		result="FAIL AKEY mismatch"
+		echo $result
+		return
+	fi
+fi
+
+while [ $n -le 5 ]; do
+	# clear key status
+	setprop vendor.atd.keymaster.ready FALSE
+	setprop vendor.debug.check.keybox 0
+	rm -rf /mnt/vendor/persist/data/DdHdV*
+	rm -rf /mnt/vendor/persist/data/TJq45N*
+	rm -f /data/asuskey.log
+
+	# start dec_key
+	/vendor/bin/install_akey_server rog9prov > /data/asuskey.log 2>&1
+	sleep 1
+	Km=`getprop vendor.atd.keymaster.ready`
+	sleep 1
+	if [ $Km == "TRUE" ]; then
+		result="PASS"
+		/vendor/bin/asusCA -acs
+		break
+	fi
+
+	n=$(( n+1 ))
+done
+
+echo $result
+}
+
+while getopts ":adefk" opt
+do
+   case "$opt" in
+      a ) 
+          echo "A Key install"
+          InstallAKey
+          ;;
+      d ) 
+          echo "D Key install"
+          /vendor/bin/hdcp_key_install HDCPK
+          sleep 1
+          rm /data/AI2401_dxhdcp.bin.secure
+          Dk=`getprop vendor.atd.hdcp.ready`
+          sleep 1
+          if [ "$Dk" == "TRUE" ]; then
+                 echo "PASS"
+                 break
+          else
+                 echo "FAIL"
+                 break
+          fi
+          ;;
+      e ) 
+          echo "E Key install"
+          /vendor/bin/hdcp_key_install HDCP1
+          sleep 1
+          rm /mnt/vendor/persist/DPS_hdcp1
+          rm /mnt/vendor/persist/hdcp1.pem
+          rm /data/AI2401_hdcp1.pem.secure
+          Ek=`getprop vendor.atd.hdcp1.ready`
+          sleep 1
+          if [ "$Ek" == "TRUE" ]; then
+                 echo "PASS"
+                 break
+          else
+                 echo "FAIL"
+                 break
+          fi
+          ;;
+      f ) 
+          echo "F Key install"
+          /vendor/bin/hdcp_key_install H2P2K
+          sleep 1
+          rm /mnt/vendor/persist/DPS_hdcp2
+          rm /mnt/vendor/persist/h2p2.pem
+          rm /data/AI2401_hdcp2p2.pem.secure
+          Fk=`getprop vendor.atd.hdcp2p2.ready`
+          sleep 1
+          if [ "$Fk" == "TRUE" ]; then
+                 echo "PASS"
+                 break
+          else
+                 echo "FAIL"
+                 break
+          fi
+          ;;
+      k ) 
+          echo "W Key install"
+          /vendor/bin/asusCA -k
+          sleep 1
+          ret=`getprop vendor.atd.keybox.install`
+          sleep 1
+          if [ "$ret" == "-2" ]; then
+                 echo "CHECKSUM FAIL"
+                 break
+          elif [ "$ret" != "0" ]; then
+                 echo "FAIL $ret"
+                 break
+          fi
+          /vendor/bin/asusCA -v
+          sleep 1
+          Wv=`getprop vendor.atd.keybox.ready`
+          sleep 1
+          if [ "$Wv" == "TRUE" ]; then
+                 echo "PASS"
+                 break
+          else
+                 echo "FAIL"
+                 break
+          fi
+          ;;
+      ? ) helpFunction ;; # Print helpFunction in case parameter is non-existent
+   esac
+done

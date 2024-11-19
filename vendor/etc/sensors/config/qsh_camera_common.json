@@ -1,0 +1,105 @@
+{
+  "config": {
+    "hw_platform": ["MTP", "Surf", "RCM", "QRD"],
+    "soc_id": ["618"]
+  },
+  "qsh_camera":{
+    "owner": "qsh_camera",
+    ".tuning_params":{
+      "owner": "qsh_camera",
+      "fd_threshold":{"type": "int", "ver": "0",
+        "data": "344"
+      },
+      "fd_false_positive_threshold_sq":{"type": "int", "ver": "0",
+        "data": "0"
+      },
+      "max_stg2_entries_per_unit_time":{"type": "int", "ver": "0",
+        "data": "0"
+      },
+      "rate_limit_unit_time_in_secs":{"type": "int", "ver": "0",
+        "data": "1"
+      },
+      ".nms_fd_qqvga":{
+        "owner": "qsh_camera",
+        "confidence_threshold": {"type": "flt", "ver": "0",
+          "data": "-17.0"
+        },
+        "iou_threshold": {"type": "flt", "ver": "0",
+          "data": "0.1"
+        },
+        "max_num_output_faces": {"type": "int", "ver": "0",
+          "data": "10"
+        },
+        "max_proposals": {"type": "int", "ver": "0",
+          "data": "50"
+        },
+        "border_margin": {"type": "int", "ver": "0",
+          "data": "3"
+        },
+        "landmarks_fs_fraction": {"type": "int", "ver": "0",
+          "data": "15"
+        }
+      },
+      ".nms_fd_qvga":{
+        "owner": "qsh_camera",
+        "confidence_threshold": {"type": "flt", "ver": "0",
+          "data": "0.0"
+        },
+        "iou_threshold": {"type": "flt", "ver": "0",
+          "data": "0.1"
+        },
+        "max_num_output_faces": {"type": "int", "ver": "0",
+          "data": "10"
+        },
+        "max_proposals": {"type": "int", "ver": "0",
+          "data": "50"
+        },
+        "border_margin": {"type": "int", "ver": "0",
+          "data": "3"
+        },
+        "landmarks_fs_fraction": {"type": "int", "ver": "0",
+          "data": "15"
+        }
+      },
+      ".nms_fd_360p":{
+        "owner": "qsh_camera",
+        "confidence_threshold": {"type": "flt", "ver": "0",
+          "data": "6.0"
+        },
+        "iou_threshold": {"type": "flt", "ver": "0",
+          "data": "0.1"
+        },
+        "max_num_output_faces": {"type": "int", "ver": "0",
+          "data": "10"
+        },
+        "max_proposals": {"type": "int", "ver": "0",
+          "data": "50"
+        },
+        "border_margin": {"type": "int", "ver": "0",
+          "data": "3"
+        },
+        "landmarks_fs_fraction": {"type": "int", "ver": "0",
+          "data": "15"
+        }
+      },
+      ".nms_qrcode":{
+        "owner": "qsh_camera",
+        "confidence_threshold_qr":{"type": "int", "ver": "0",
+          "data": "31"
+        },
+        "confidence_threshold_bar":{"type": "int", "ver": "0",
+          "data": "31"
+        }
+      }
+    },
+    ".nms_params_eod":{
+      "owner": "qsh_camera",
+      "conf_thresh_eod":{"type": "int", "ver": "0",
+        "data": "40"
+      },
+      "conf_thresh_eoc":{"type": "int", "ver": "0",
+        "data": "50"
+      }
+    }
+  }
+}

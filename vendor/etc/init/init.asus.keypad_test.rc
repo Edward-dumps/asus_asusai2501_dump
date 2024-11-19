@@ -1,0 +1,3 @@
+on property:ro.boot.ftm=1 && property:sys.boot_completed=1 && property:vendor.atd.symlink.ready=1
+	symlink /vendor/bin/Keypad_Test /data/data/Keypad_Test
+	symlink /vendor/bin/Keypad_Test_Mode /data/data/Keypad_Test_Mode

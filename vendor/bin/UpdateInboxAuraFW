@@ -1,0 +1,78 @@
+#!/vendor/bin/sh
+
+# Switch to 0x16 MS51
+echo 1 > /sys/class/leds/aura_inbox/ic_switch
+ic_switch=`cat /sys/class/leds/aura_inbox/ic_switch`
+
+type=`cat /sys/class/ec_hid/dongle/device/gDongleType`
+FW_VER=`cat /vendor/firmware/FW_version.txt | grep FAN6_AURA1_FW | cut -d ':' -f 2`
+#aura_fw=`getprop vendor.asusfw.inbox.aura_fwver`
+fw_mode=`cat /sys/class/leds/aura_inbox/fw_mode`
+fw_ver=`cat /sys/class/leds/aura_inbox/fw_ver`
+#FW_FILE=`cat /sys/class/leds/aura_inbox/fw_update`
+
+function Update() {
+	fw_mode=`cat /sys/class/leds/aura_inbox/fw_mode`
+	if [ "${fw_mode}" == "2" ]; then
+		echo "[AURA_INBOX] It is in LD mode, we will try to flash the AP FW" > /dev/kmsg
+		echo "[AURA_INBOX] Strat MS51 FW update" > /dev/kmsg
+		echo "[AURA_INBOX] Update $FW_FILE" > /dev/kmsg
+		echo 1 > /sys/class/leds/aura_inbox/fw_update
+	else # AP mode,fw_mode=1
+		echo 1 > /sys/class/leds/aura_inbox/ap2ld
+		sleep 1
+		fw_mode=`cat /sys/class/leds/aura_inbox/fw_mode`
+		if [ "${fw_mode}" == "2" ]; then
+			echo "[AURA_INBOX] It is in LD mode, we will try to update the AP FW" > /dev/kmsg
+			echo "[AURA_INBOX] Strat MS51 FW update" > /dev/kmsg
+			echo "[AURA_INBOX] Update $FW_FILE" > /dev/kmsg
+			echo 1 > /sys/class/leds/aura_inbox/fw_update
+		else
+			echo "[AURA_INBOX] AP mode -> LD mode failed" > /dev/kmsg
+			echo "FAIL"
+			exit
+		fi
+	fi
+}
+
+function Check_FW() {
+	fw_ver=`cat /sys/class/leds/aura_inbox/fw_ver`
+
+	if [ "$fw_ver" == "$FW_VER" ]; then
+		echo "[AURA_INBOX] FW ver is the same $FW_VER" > /dev/kmsg
+		echo "PASS"
+		exit
+	else
+		echo "[AURA_INBOX] FW ver is not the same $FW_VER" > /dev/kmsg
+		echo "FAIL"
+		exit
+	fi
+}
+
+function Reset() {
+	#Todo: reset 
+	echo 1 > /sys/class/leds/aura_inbox/ld2ap
+	sleep 1
+}
+
+if [ "${type}" != "8" ]; then
+	echo "[AURA_INBOX] FAN DG 6 not connect, Dongle Type is $type" > /dev/kmsg
+	echo "FAIL"
+	exit
+fi
+
+if [ "$fw_ver" == "$FW_VER" ]; then
+	echo "[AURA_INBOX] FW ver is the same $FW_VER" > /dev/kmsg
+	echo "PASS"
+	exit
+fi
+
+Update;
+sleep 1
+fw_mode=`cat /sys/class/leds/aura_inbox/fw_mode`
+
+if [ "${fw_mode}" == "2" ]; then
+	Reset;
+fi
+
+Check_FW;

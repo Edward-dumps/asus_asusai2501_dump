@@ -1,0 +1,10 @@
+<!--
+    Input:
+        vendor/qcom/proprietary/fwk-utils/debugutils/vendor.qti.hardware.debugutils-service.xml
+-->
+<manifest version="8.0" type="device">
+    <hal format="aidl">
+        <name>vendor.qti.hardware.debugutils</name>
+        <fqname>IDebugUtils/default</fqname>
+    </hal>
+</manifest>

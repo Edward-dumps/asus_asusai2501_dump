@@ -1,0 +1,41 @@
+#!/vendor/bin/sh
+
+if [ -n "$1" ]; then
+	export CMD=$1
+else
+	echo "CMD not assigned !"
+	echo " 0 (Off), 1 (on)"
+	exit
+fi
+
+if [ "$CMD" -lt "0" -o "$CMD" -gt "1" ]; then
+	echo "CMD not assigned !"
+	echo " 0 (Off), 1 (on)"
+	exit
+fi
+
+if [ "$CMD" -eq "0" ]; then
+	echo 0 > /sys/class/leds/aura_inbox/cooling_en
+	ENABLE=`cat /sys/class/leds/aura_inbox/cooling_en`
+
+	if [ "$ENABLE" == "0" ]; then
+		echo PASS
+	else
+		echo FAIL
+	fi
+
+elif [ "$CMD" -eq "1" ]; then
+	echo 1 > /sys/class/leds/aura_inbox/cooling_en
+	sleep 0.1
+
+	echo 64 > /sys/class/leds/aura_inbox/cooling_stage
+
+	STAGE=`cat /sys/class/leds/aura_inbox/cooling_stage`
+
+	if [ "$STAGE" == "0x40" ]; then
+		echo PASS
+	else
+		echo FAIL
+	fi
+fi
+

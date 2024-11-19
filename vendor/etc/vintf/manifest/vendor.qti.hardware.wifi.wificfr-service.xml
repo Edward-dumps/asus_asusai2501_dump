@@ -1,0 +1,10 @@
+<!--
+    Input:
+        vendor/qcom/proprietary/wlan/utils/cfr/vendor.qti.hardware.wifi.wificfr-service.xml
+-->
+<manifest version="8.0" type="device">
+    <hal format="aidl">
+        <name>vendor.qti.hardware.wifi.wificfr</name>
+        <fqname>IWificfr/default</fqname>
+    </hal>
+</manifest>

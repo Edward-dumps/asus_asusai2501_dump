@@ -1,0 +1,14 @@
+#!/vendor/bin/sh
+
+echo 1 > /sys/class/leds/aura_inbox/cooling_en
+sleep 0.1
+
+DEVID=`cat /sys/class/leds/aura_inbox/cooling_DEVID`
+
+if [ "$DEVID" == "0xa8" ]; then
+	echo PASS
+else
+	echo FAIL
+fi
+
+echo 0 > /sys/class/leds/aura_inbox/cooling_en

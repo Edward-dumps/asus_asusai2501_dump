@@ -1,0 +1,84 @@
+#!/vendor/bin/sh
+
+if [ -n "$1" ]; then
+	export CMD=$1
+else
+	echo "CMD not assigned !"
+	echo " 0 (Off), 1 (Red), 2 (Green), 3 (Blue), 4(White)"
+	exit
+fi
+
+if [ "$CMD" -lt "0" -o "$CMD" -gt "4" ]; then
+	echo "CMD not assigned !"
+	echo " 0 (Off), 1 (Red), 2 (Green), 3 (Blue), 4(White)"
+	exit
+fi
+
+echo 2 > /sys/class/leds/aura_inbox/ic_switch
+echo 0 > /sys/class/leds/aura_inbox/led_on
+echo 0 > /sys/class/leds/aura_inbox/door_on
+echo 0 > /sys/class/leds/aura_inbox/logo_on
+
+if [ "$CMD" -eq "0" ]; then
+	echo 0 > /sys/class/leds/aura_inbox/led_on
+	echo 0 > /sys/class/leds/aura_inbox/door_on
+	echo 0 > /sys/class/leds/aura_inbox/logo_on
+	echo 0 > /sys/class/leds/aura_inbox/mode2
+	echo 1 > /sys/class/leds/aura_inbox/apply
+	res1=`cat /sys/class/leds/aura_inbox/mode2`
+	res2=`cat /sys/class/leds/aura_inbox/apply`
+	if [ "$res1" -eq "0" -a "$res2" -eq "0" ]; then
+		echo 1
+	else
+		echo 0
+	fi
+
+elif [ "$CMD" -eq "1" ]; then
+	echo 1 > /sys/class/leds/aura_inbox/led_on
+	echo 2,000000,FF0000,000000 > /sys/class/leds/aura_inbox/mode2
+	echo 1 > /sys/class/leds/aura_inbox/apply
+	res1=`cat /sys/class/leds/aura_inbox/mode2`
+	res2=`cat /sys/class/leds/aura_inbox/apply`
+	if [ "$res1" -eq "2" -a "$res2" -eq "0" ]; then
+		echo 1
+	else
+		echo 0
+	fi
+
+elif [ "$CMD" -eq "2" ]; then
+	echo 1 > /sys/class/leds/aura_inbox/led_on
+	echo 2,000000,00FF00,000000 > /sys/class/leds/aura_inbox/mode2
+	echo 1 > /sys/class/leds/aura_inbox/apply
+	res1=`cat /sys/class/leds/aura_inbox/mode2`
+	res2=`cat /sys/class/leds/aura_inbox/apply`
+	if [ "$res1" -eq "2" -a "$res2" -eq "0" ]; then
+		echo 1
+	else
+		echo 0
+	fi
+
+elif [ "$CMD" -eq "3" ]; then
+	echo 1 > /sys/class/leds/aura_inbox/led_on
+	echo 2,000000,0000FF,000000 > /sys/class/leds/aura_inbox/mode2
+	echo 1 > /sys/class/leds/aura_inbox/apply
+	res1=`cat /sys/class/leds/aura_inbox/mode2`
+	res2=`cat /sys/class/leds/aura_inbox/apply`
+	if [ "$res1" -eq "2" -a "$res2" -eq "0" ]; then
+		echo 1
+	else
+		echo 0
+	fi
+
+elif [ "$CMD" -eq "4" ]; then
+	echo 1 > /sys/class/leds/aura_inbox/led_on
+	echo 2,000000,FFFFFF,000000 > /sys/class/leds/aura_inbox/mode2
+	echo 1 > /sys/class/leds/aura_inbox/apply
+	res1=`cat /sys/class/leds/aura_inbox/mode2`
+	res2=`cat /sys/class/leds/aura_inbox/apply`
+	if [ "$res1" -eq "2" -a "$res2" -eq "0" ]; then
+		echo 1
+	else
+		echo 0
+	fi
+
+fi
